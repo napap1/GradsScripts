@@ -11,7 +11,7 @@ function main(args)
 *'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'date'/gfs_0p25_'hour'z'
 *'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25_1hr/gfs'date'/gfs_0p25_1hr_'hour'z'
 
-'open 2009062500.ctl'
+'open 2014060918.ctl'
 
 *******************************************************************
 ********************** Mapopties en resolutie**********************
@@ -42,12 +42,12 @@ hub = subwrd(times,6)
 
 * Colortable
 ************
-'color.gs 0 20 0.2 -gxout shaded -kind (255,255,255)->(130,130,130)->(190,190,63)->(255,255,0)->(236,208,0)->(217,161,0)->(197,114,0)->(178,67,0)->(158,20,0)->(179,16,56)->(201,11,113)->(223,7,169)->(245,2,226)->(216,32,229)->(187,62,232)->(158,92,236)->(129,122,239)->(100,152,243)->(71,182,246)->(42,212,249)->(13,242,253)'
+'color.gs 0 6000 100 -gxout shaded -kind (255,255,255)->(226,226,226)->(196,196,196)->(167,167,167)->(137,137,137)->(108,108,108)->(60,140,60)->(12,173,12)->(93,200,8)->(174,227,4)->(255,255,0)->(245,231,0)->(234,206,0)->(225,181,0)->(215,156,0)->(204,131,0)->(194,106,0)->(184,81,0)->(174,56,0)->(163,32,0)->(153,7,0)->(172,6,48)->(191,5,97)->(211,3,145)->(230,2,194)->(250,1,242)->(239,1,243)->(228,1,244)->(216,1,245)->(205,1,247)->(193,1,248)->(182,1,249)->(171,1,250)->(159,1,252)->(148,1,253)->(136,1,254)->(128,17,254)->(119,33,254)->(110,49,254)->(101,66,254)->(92,82,254)->(83,98,254)->(74,115,254)->(65,131,254)->(56,147,254)->(47,164,254)->(38,180,254)->(29,196,254)->(21,213,254)->(12,229,254)->(3,245,254)->(3,222,230)->(3,198,205)->(3,174,180)->(3,150,155)->(3,126,131)->(3,102,106)->(3,78,81)->(3,54,56)->(3,30,31)->(3,6,7)'
 
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 Bow echo parameter, Stormmotion, Bow propagation, SCP & 500mb GPM'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 CAPE, 10m Windfield, Supercel composite parameter & 500mb GPM'
 'set strsiz 0.10'
 'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
 
@@ -96,29 +96,10 @@ say '..DLS'
 'define vsheardls=v450-v1000'
 'define sheardls=sqrt(usheardls*usheardls+vsheardls*vsheardls)'
 
-say '..Shear3km'
-'define ushearmls=u700-u1000'
-'define vshearmls=v700-v1000'
-'define shearmls=sqrt(ushearmls*ushearmls+vshearmls*vshearmls)'
-
-say '...DLSangle'
-'define shearangle=57.3*atan2(usheardls,vsheardls)+180'
-
 say '..Meanwind 0-6km'
 'define umean=(u1000+u975+u950+u925+u900+u850+u800+u750+u700+u650+u600+u550+u500+u450)/14.0'
 'define vmean=(v1000+v975+v950+v925+v900+v850+v800+v750+v700+v650+v600+v550+v500+v450)/14.0'
 'define meanwind=sqrt(umean*umean+vmean*vmean)'
-
-say '...Meanwind 0-6km angle'
-'define mwangle=57.3*atan2(umean,vmean)+180'
-
-say '..Meanwind 4-8km'
-'define umeanul = (u600+u550+u500+u450+u400+u350)/6'
-'define vmeanul = (v600+v550+v500+v450+v400+v350)/6'
-'define meanwindul=sqrt(umeanul*umeanul+vmeanul*vmeanul)'
-
-say '..Anglediff Smotion-shear'
-'define anglediff = abs(mwangle-shearangle)'
 
 say '..SRH3km'
 'define umotion=((umean+(7.5/(sheardls))*vsheardls))'
@@ -135,24 +116,15 @@ say '..SRH3km'
 
 'define srh3km=srh1+srh2+srh3+srh4+srh5+srh6+srh7+srh8'
 
-say '..LapseRate 2-8km'
-'define t800 = tmpprs(lev=800)'
-'define h800 = hgtprs(lev=800)'
-'define t450 = tmpprs(lev=450)'
-'define h450 = hgtprs(lev=450)'
-'define lapse=(abs(t800 - t450) / (h450-h800))*1000'
-
 say '..Supercel Composite'
 'define shearterm = (sheardls/20)'
 'shearterm = const(maskout(shearterm, shearterm-0.5),0,-u)'
 'shearterm = const(maskout(shearterm, 1-shearterm),1,-u)'
-'define scp = ((cape180_0mb/1000)*(shearterm)*(srh3km/50))'
+'define scp = ((capesfc/1000)*(shearterm)*(srh3km/50))'
 
-say '..Bow Echo Parameter'
-*'define bep=(cape180_0mb/1500)*(lapse/7)*(45/anglediff)*(meanwindul/20)*(meanwind/10)'
-'define bep=((cape180_0mb)/1500)*(lapse/6)*(cos(anglediff))*(meanwindul/10)*(sheardls/10)'
-
-'d bep'
+* visualisatie CAPE
+*******************
+'d capesfc'
 
 * visualisatie Stormmotion
 **************************
@@ -161,28 +133,30 @@ say '..Bow Echo Parameter'
 'set cthick 7'
 'set ccolor 250'
 'set strmden 7'
-'d umean;vmean'
-
-* visualisatie bowdirection
-***************************
-'set gxout vector'
-'set arrlab off'
-'set rgb 250 255 255 255 75'
-'set ccolor 250'
-'d maskout(1.944*usheardls,bep-1);1.944*vsheardls'
+'set cstyle 1'
+'d ugrd10m;vgrd10m'
 
 * visualisatie SCP
 ******************
 'set gxout contour'
-'set rgb 250 0 0 0 175'
+'set rgb 250 255 255 255'
 'set cint 1'
 'set cmin 1'
-'set cstyle 3'
+'set cstyle 1'
 'set ccolor 250'
 'set clab masked'
 'set clopts -1'
-'set cthick 7'
+'set cthick 1'
 'd scp'
+
+* visualisatie RM superceldirection
+***********************************
+'set gxout vector'
+'set arrlab off'
+'set rgb 250 255 255 255 100'
+'set ccolor 250'
+'set cthick 7'
+'d maskout(1.944*umotion,scp-1);1.944*vmotion'
 
 * visualisatie 500mb height contours
 ************************************
@@ -206,26 +180,25 @@ hub = subwrd(times,6)
 'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
 
 'set strsiz 0.12'
-'set string 1 r 3 270' ; 'draw string 0.15 0.35 <-- higher means increased potential & severity for/of BowEchos -->'
+'set string 1 r 3 270' ; 'draw string 0.15 0.35 <- J/kg, Higher means thermodynamically more favorable for TSTMS ->' 
 
 'set strsiz 0.10'
-'set string 1 r 4 0' ; 'draw string 10.95 7.85 Supercel composite: thin black contours, each increment of 1'
+'set string 1 r 4 0' ; 'draw string 10.95 7.85 Supercel composite: Thin white contours, each increment of 1'
 'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 Vectors: Direction of Bow propagation'
-'set string 1 r 4 0' ; 'draw string 10.95 7.25 streamlines: Stormmotion'
+'set string 1 r 4 0' ; 'draw string 10.95 7.45 Vectors: Direction of Rightmoving supercels'
+'set string 1 r 4 0' ; 'draw string 10.95 7.25 Streamlines: 10m windfield'
 
 'set strsiz 0.14'
 'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
-'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (13km), run: 'huh
+'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (13km), Analysis'
 
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\700mbThetae'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\CAPE_anal'hub'.png x1024 y768'
 
 'clear'
 'set grads off'
 
-*'quit'
 
 ************************************************************* 
 * END OF MAIN SCRIPT                                        *

@@ -15,13 +15,13 @@ function main(args)
 ********************** Mapopties en resolutie**********************
 'set mproj lambert'
 
-*'set lon -32 30'
-*'set lat 30 65'
-*'set mpvals -2 19 47 59'
+'set lon -32 30'
+'set lat 30 65'
+'set mpvals -2 19 47 59'
 
-'set lon -60 55'
-'set lat 25 80'
-'set mpvals -10 35 45 70'
+*'set lon -60 55'
+*'set lat 25 80'
+*'set mpvals -10 35 45 70'
 
 'set display color white'
 'set csmooth on'
@@ -67,7 +67,7 @@ hub = subwrd(times,6)
 
 * iteratie
 **********
-maps = 82
+'maps = 82'
   i = 1
   while ( i<maps )
 'set t ' i
@@ -209,7 +209,6 @@ say '..MSLP per 1mb'
 'set cint 1'
 'set clopts -1'
 'set clab off'
-'set csmooth on'
 'd slp'
 
 say '..MSLP per 4mb'
@@ -224,7 +223,6 @@ say '..MSLP per 4mb'
 'set clopts -1'
 'set clab masked'
 'set cthick 6'
-'set csmooth on'
 'd slp'
 
 say '..500mb GPM'
@@ -239,7 +237,6 @@ say '..500mb GPM'
 'set clopts -1'
 'set clab masked'
 'set cthick 7'
-'set csmooth on'
 'd smth9(hgtprs(lev=500))'
 
 say '.Colorbar & annotations'
@@ -270,7 +267,7 @@ say '..Run: 'huh
 
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\thetaE_eur_'i'_valid_'hub'_run_'huh'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\thetaE_meur_'i'_valid_'hub'_run_'huh'.png x1024 y768'
 
 
 say '***'

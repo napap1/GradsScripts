@@ -80,22 +80,16 @@ maps = 82
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 300-250mb Isotachs, Streamlines, Geopotential height (m) & MSLP'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 500mb Isotachs, Streamlines, Geopotential height (m) & MSLP'
 'set strsiz 0.10'
 'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
 
 say '.Calculations'
 * Declaration variables & calculations
 **************************************
-'define u250 = ugrdprs(lev=250)*1.943844'
-'define v250 = vgrdprs(lev=250)*1.943844'
-'define u300 = ugrdprs(lev=300)*1.943844'
-'define v300 = vgrdprs(lev=300)*1.943844'
-
-'define uavg = (u250 + u300)/2'
-'define vavg = (v250 + v300)/2'
-
-'define wspeed = sqrt(uavg*uavg+vavg*vavg)'
+'define u500 = ugrdprs(lev=500)*1.943844'
+'define v500 = vgrdprs(lev=500)*1.943844'
+'define wspeed = sqrt(u500*u500+v500*v500)'
 
 'define slp  = const((prmslmsl*0.01),0,-u)'
 
@@ -109,7 +103,7 @@ say '..500mb Isotachs'
 'set gxout stream'
 'set ccolor 250'
 'set strmden 5'
-'d uavg;vavg'
+'d u500;v500'
 
 say '..MSLP per 1mb'
 * visualisatie MSLP
@@ -174,12 +168,12 @@ hub = subwrd(times,6)
 'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
 
 'set strsiz 0.12'
-'set string 1 r 3 270' ; 'draw string 0.15 0.35 <----- kts, Higher means increasing upper level windspeed ----->' 
+'set string 1 r 3 270' ; 'draw string 0.15 0.35 <------ kts, Higher means increasing mid level windspeed ------>' 
 
 'set strsiz 0.10'
 'set string 1 r 4 0' ; 'draw string 10.95 7.85 MSLP: Dashed contours each 1mb, Thick contours each 4mb'
 'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 300-250mb Isotachs: Dashed contour each 25 kts'
+'set string 1 r 4 0' ; 'draw string 10.95 7.45 500mb Isotachs: Dashed contour each 25 kts'
 
 'set strsiz 0.14'
 'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
@@ -189,7 +183,7 @@ say '.Saving file'
 
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\ulj'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\mlj'i'.png x1024 y768'
 
 'clear'
 'set grads off'

@@ -14,16 +14,11 @@ function main(args)
 *******************************************************************
 ********************** Mapopties en resolutie**********************
 'set mproj lambert'
+'set lon -32 30'
+'set lat 30 65'
 
-** Western Europe
-*'set lon -32 30'
-*'set lat 30 65'
-*'set mpvals -2 19 46 58'
-
-** Europe
-'set lon -60 55'
-'set lat 25 80'
-'set mpvals -10 35 45 70'
+*'set mpvals -2 19 47 59'
+'set mpvals -2 19 43 54'
 
 'set display color white'
 'set csmooth on'
@@ -57,7 +52,7 @@ _time2 = subwrd(times,8)
 _tdim = _time1' '_time2
 tincr = subwrd(_tdef,5)
 _tdef = 'tdef 'tsize' linear '_time1' 'tincr
-runvar = subwrd(_tdef,4)
+huh = subwrd(_tdef,4)
 
 'q dims'
 times  = sublin(result,5)
@@ -81,7 +76,9 @@ hub = subwrd(times,6)
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 OS Bow Echo Parameter, Smotion, Bow propagation & 500mb GPM'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 Bow echo parameter, Stormmotion, Bow propagation & 500mb GPM'
+'set strsiz 0.10'
+'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
 
 say '.Calculations'
 * Declaration variables & calculations
@@ -105,8 +102,6 @@ say '..U-compontents'
 'define u400=ugrdprs(lev=400)'
 'define u350=ugrdprs(lev=350)'
 
-'define umean850700 = (u850+u800+u750+u700)/4'
-
 say '..V-compontents'
 'define v1000=vgrdprs(lev=1000)'
 'define v975=vgrdprs(lev=975)'
@@ -125,10 +120,6 @@ say '..V-compontents'
 'define v400=vgrdprs(lev=400)'
 'define v350=vgrdprs(lev=350)'
 
-'define vmean850700 = (v850+v800+v750+v700)/4'
-
-'define mw850700=(sqrt(umean850700*umean850700+vmean850700*vmean850700))'
-
 say '..DLS'
 'define usheardls=u450-u1000'
 'define vsheardls=v450-v1000'
@@ -136,12 +127,6 @@ say '..DLS'
 
 say '...DLSangle'
 'define shearangle=57.3*atan2(usheardls,vsheardls)+180'
-
-say '..Shear 3km'
-'define shear3kmu=u700 - u1000'
-'define shear3kmv=u700 - v1000'
-
-'define shear3km=(sqrt(shear3kmu*shear3kmu+shear3kmv*shear3kmv))'
 
 say '..Meanwind 0-6km'
 'define umean=(u1000+u975+u950+u925+u900+u850+u800+u750+u700+u650+u600+u550+u500+u450)/14.0'
@@ -168,8 +153,7 @@ say '..LapseRate 2-8km'
 
 say '..Bow Echo Parameter'
 *'define bep=(cape180_0mb/1500)*(lapse/7)*(45/anglediff)*(meanwindul/20)*(meanwind/20)'
-*'define bep=((cape180_0mb*3)/1500)*(lapse/4)*(meanwindul/20)*(meanwind/16)'
-'define bep=((capesfc/100)*(shear3km/20)*(mw850700/25)*(meanwind/25)*(lapse/6))'
+'define bep=((cape180_0mb*3)/1500)*(lapse/4)*(meanwindul/20)*(meanwind/16)'
 
 'd bep'
 
@@ -184,7 +168,7 @@ say '..Bow Echo Parameter'
 
 * visualisatie Stormmotion
 **************************
-'set rgb 250 0 0 0 20'
+'set rgb 250 0 0 0 40'
 'set gxout stream'
 'set cthick 7'
 'set ccolor 250'
@@ -195,10 +179,9 @@ say '..Bow Echo Parameter'
 ***************************
 'set gxout vector'
 'set arrlab off'
-'set rgb 250 0 0 0 175'
+'set rgb 250 255 255 255 100'
 'set ccolor 250'
-*'d maskout(1.944*usheardls,bep-1);1.944*vsheardls'
-'d skip(maskout((usheardls*1.943844),bep-1),3,3); vsheardls*1.943844'
+'d maskout(1.944*usheardls,bep-1);1.944*vsheardls'
 
 * visualisatie 500mb height contours
 ************************************
@@ -217,7 +200,7 @@ say '..Bow Echo Parameter'
 ************************
 'q dims'
 times  = sublin(result,5)
-validvar = subwrd(times,6)
+hub = subwrd(times,6)
 
 'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
 
@@ -226,18 +209,16 @@ validvar = subwrd(times,6)
 
 'set strsiz 0.10'
 'set string 1 r 4 0' ; 'draw string 10.95 7.85 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.65 Vectors: Bow echo propagation'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 Streamlines: Stormmotion'
+'set string 1 r 4 0' ; 'draw string 10.95 7.65 Vectors: Direction of Bow propagation'
+'set string 1 r 4 0' ; 'draw string 10.95 7.45 streamlines: Stormmotion'
 
 'set strsiz 0.14'
-'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG)'
-
-'set strsiz 0.10'
-'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be - Run: 'runvar' - `4Valid: 'validvar
+'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
+'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (13km), run: 'huh
 
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\osbedi'i'_valid_'validvar'_run_'runvar'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\700mbThetae'i'.png x1024 y768'
 
 'clear'
 'set grads off'

@@ -55,69 +55,80 @@ _time2 = subwrd(times,8)
 _tdim = _time1' '_time2
 tincr = subwrd(_tdef,5)
 _tdef = 'tdef 'tsize' linear '_time1' 'tincr
-huh = subwrd(_tdef,4)
+runvar = subwrd(_tdef,4)
 
 'q dims'
 times  = sublin(result,5)
-hub = subwrd(times,6)
+validvar = subwrd(times,6)
 
-************************************************
-* 500mb Isotachs                               *
-************************************************
+***********************************************
+* 850mb Theta-E                               *
+***********************************************
 
 * iteratie
 **********
 maps = 82
-
   i = 1
   while ( i<maps )
 'set t ' i
 
+say 'Timestep 'i
+
 * Colortable
 ************
-'color.gs 0 150 2 -gxout shaded -kind (255,255,255)->(218,218,218)->(180,180,177)->(142,142,142)->(104,104,104)->(22,231,226)->(79,127,193)->(137,23,159)->(151,50,141)->(165,78,122)->(179,105,103)->(193,133,84)->(207,161,65)->(221,188,46)->(235,216,27)->(249,244,8)'
+'color.gs 0 200 1 -gxout shaded -kind (255,255,255)->(217,217,217)->(178,178,178)->(139,139,139)->(100,100,100)->(50,140,50)->(0,180,0)->(127,217,0)->(255,255,0)->(189,128,0)->(122,0,0)->(188,0,127)->(255,0,255)->(222,0,255)->(189,0,255)->(155,0,255)->(121,0,255)->(92,0,193)->(62,0,131)->(33,0,69)->(0,0,0)'
 
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 300-250mb Isotachs, Streamlines, Geopotential height (m) & MSLP'
-'set strsiz 0.10'
-'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 Max windgusts, MSLP(mb), 500mb GPM(m) & 10-100m windvectors'
 
 say '.Calculations'
 * Declaration variables & calculations
 **************************************
-'define u250 = ugrdprs(lev=250)*1.943844'
-'define v250 = vgrdprs(lev=250)*1.943844'
-'define u300 = ugrdprs(lev=300)*1.943844'
-'define v300 = vgrdprs(lev=300)*1.943844'
+'define u10m = ugrd10m * 1.943844'
+'define v10m = vgrd10m * 1.943844'
+'define u100m = ugrd100m * 1.943844'
+'define v100m = vgrd100m * 1.943844'
 
-'define uavg = (u250 + u300)/2'
-'define vavg = (v250 + v300)/2'
-
-'define wspeed = sqrt(uavg*uavg+vavg*vavg)'
+'define umean = (u10m + u100m) / 2'
+'define vmean = (v10m + v100m) / 2'
 
 'define slp  = const((prmslmsl*0.01),0,-u)'
 
 say '.Visualisations'
-* visualisatie 500mb windspeeds
-*******************************
-say '..500mb Isotachs'
-'d wspeed'
+* visualisatie Gusts
+********************
+say '..Windgusts'
 
-'set rgb 250 0 0 0 20'
-'set gxout stream'
+'d gustsfc*3.6'
+
+'set rgb 250 255 255 255 160'
+'set gxout contour'
+'set cstyle 3'
 'set ccolor 250'
-'set strmden 5'
-'d uavg;vavg'
+'set cint 10'
+'set cmin 80'
+'set clab masked'
+'set clopts -1'
+'d gustsfc*3.6'
+
+* visualisatie vectors
+**********************
+say '..10-100m vectors'
+'set rgb 250 0 0 0 40'
+'set gxout vector'
+'set ccolor 250'
+'d skip(umean,3,3);vmean'
+*'d skip(umean,3;vmean)'
 
 say '..MSLP per 1mb'
 * visualisatie MSLP
 *******************
-'set rgb 250 0 0 0 80'
+'set rgb 250 0 0 0 50'
 'set gxout contour'
 'set ccolor 250'
-'set cstyle 3'
+'set cstyle 1'
 'set cint 1'
 'set clopts -1'
 'set clab off'
@@ -126,7 +137,7 @@ say '..MSLP per 1mb'
 say '..MSLP per 4mb'
 * visualisatie MSLP
 *******************
-'set rgb 250 0 0 0 150'
+'set rgb 250 0 0 0 75'
 'set gxout contour'
 'set ccolor 250'
 'set cstyle 1'
@@ -136,27 +147,12 @@ say '..MSLP per 4mb'
 'set cthick 6'
 'd slp'
 
-say '..Isotachs per 25kts'
-* visualisatie Isotachs
-*******************
-'set rgb 250 255 255 255 255'
-'set gxout contour'
-'set ccolor 250'
-'set cstyle 3'
-'set clopts -1'
-'set clab off'
-'set cthick 1'
-'set cmin 50'
-'set cint 25'
-'d wspeed'
-
 say '..500mb GPM'
 * visualisatie 500mb height contours
 ************************************
 'set gxout contour'
-'set rgb 250 255 255 255 255'
 'set cthick 13'
-'set ccolor 250'
+'set ccolor 11'
 'set cstyle 1'
 'set cint 50'
 'set clopts -1'
@@ -169,30 +165,34 @@ say '.Colorbar & annotations'
 ************************
 'q dims'
 times  = sublin(result,5)
-hub = subwrd(times,6)
+validvar = subwrd(times,6)
 
 'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
 
 'set strsiz 0.12'
-'set string 1 r 3 270' ; 'draw string 0.15 0.35 <----- kts, Higher means increasing upper level windspeed ----->' 
+'set string 1 r 3 270' ; 'draw string 0.15 0.35 <- km/hr, Higher means increasing intensity of maximum windgusts ->' 
 
 'set strsiz 0.10'
-'set string 1 r 4 0' ; 'draw string 10.95 7.85 MSLP: Dashed contours each 1mb, Thick contours each 4mb'
-'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 300-250mb Isotachs: Dashed contour each 25 kts'
+'set string 1 r 4 0' ; 'draw string 10.95 7.85 Windgusts: Dashed white contours each 10km/hr, starting at 80 km/hr'
+'set string 1 r 4 0' ; 'draw string 10.95 7.65 MSLP: Dashed black contours each 1mb, Thick contours each 4mb'
+'set string 1 r 4 0' ; 'draw string 10.95 7.45 500mb geopotential height: Thick contours each 50 meter'
 
 'set strsiz 0.14'
-'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
-'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG), run: 'huh
+'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG)'
+
+'set strsiz 0.10'
+'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be - Run: 'runvar' - `4Valid: 'validvar
 
 say '.Saving file'
-
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\ulj'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\Gust_eur_'i'_valid_'validvar'_run_'runvar'.png x1024 y768'
 
 'clear'
 'set grads off'
+
+say '**'
+say ''
 
 * iteratie progressie
 *********************

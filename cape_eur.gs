@@ -15,13 +15,13 @@ function main(args)
 ********************** Mapopties en resolutie**********************
 'set mproj lambert'
 
-*'set lon -32 30'
-*'set lat 30 65'
-*'set mpvals -2 19 47 59'
+'set lon -32 30'
+'set lat 30 65'
+'set mpvals -2 19 47 59'
 
-'set lon -60 55'
-'set lat 25 80'
-'set mpvals -10 35 45 70'
+*'set lon -60 55'
+*'set lat 25 80'
+*'set mpvals -10 35 45 70'
 
 'set display color white'
 'set csmooth on'
@@ -55,108 +55,96 @@ _time2 = subwrd(times,8)
 _tdim = _time1' '_time2
 tincr = subwrd(_tdef,5)
 _tdef = 'tdef 'tsize' linear '_time1' 'tincr
-huh = subwrd(_tdef,4)
+runvar = subwrd(_tdef,4)
 
 'q dims'
 times  = sublin(result,5)
-hub = subwrd(times,6)
+validvar = subwrd(times,6)
 
-************************************************
-* 500mb Isotachs                               *
-************************************************
+***********************************************
+* 850mb Theta-E                               *
+***********************************************
 
 * iteratie
 **********
 maps = 82
-
   i = 1
   while ( i<maps )
 'set t ' i
 
+say 'Timestep 'i
+
 * Colortable
 ************
-'color.gs 0 150 2 -gxout shaded -kind (255,255,255)->(218,218,218)->(180,180,177)->(142,142,142)->(104,104,104)->(22,231,226)->(79,127,193)->(137,23,159)->(151,50,141)->(165,78,122)->(179,105,103)->(193,133,84)->(207,161,65)->(221,188,46)->(235,216,27)->(249,244,8)'
+'color.gs 0 6000 50 -gxout shaded -kind (255,255,255)->(0,150,0)->(255,255,0)->(192,132,0)->(129,8,0)->(188,5,120)->(251,1,247)->(221,11,218)->(191,21,188)->(162,31,160)->(131,42,131)->(101,52,101)->(72,72,72)'
 
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 300-250mb Isotachs, Streamlines, Geopotential height (m) & MSLP'
-'set strsiz 0.10'
-'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 CAPE, SFC-100m layer windfield, 500mb GPM(m) & Lifted Index'
 
 say '.Calculations'
 * Declaration variables & calculations
 **************************************
-'define u250 = ugrdprs(lev=250)*1.943844'
-'define v250 = vgrdprs(lev=250)*1.943844'
-'define u300 = ugrdprs(lev=300)*1.943844'
-'define v300 = vgrdprs(lev=300)*1.943844'
+'define cape1 = capesfc'
+'define cape2 = cape180_0mb'
+'define cape3 = cape255_0mb'
+'define meancape = (capesfc + cape180_0mb + cape255_0mb)/3'
 
-'define uavg = (u250 + u300)/2'
-'define vavg = (v250 + v300)/2'
+'define u10m = ugrd10m * 1.943844'
+'define v10m = vgrd10m * 1.943844'
+'define u100m = ugrd100m * 1.943844'
+'define v100m = vgrd100m * 1.943844'
 
-'define wspeed = sqrt(uavg*uavg+vavg*vavg)'
-
-'define slp  = const((prmslmsl*0.01),0,-u)'
+'define umean = (u10m + u100m) / 2'
+'define vmean = (v10m + v100m) / 2'
 
 say '.Visualisations'
-* visualisatie 500mb windspeeds
-*******************************
-say '..500mb Isotachs'
-'d wspeed'
+* visualisatie CAPE
+*******************
+say '..mean CAPE'
 
-'set rgb 250 0 0 0 20'
+'d meancape'
+
+'set rgb 200 255 255 255 160'
+'set gxout contour'
+'set cstyle 3'
+'set ccolor 200'
+'set cint 500'
+'set cmin 500'
+'set clab off'
+'d meancape'
+
+* visualisatie streamlines
+**************************
+say '..10-100m streamlines'
+'set rgb 200 150 150 150 100'
 'set gxout stream'
-'set ccolor 250'
-'set strmden 5'
-'d uavg;vavg'
+'set strmden 7'
+'set ccolor 200'
+'d umean;vmean'
 
-say '..MSLP per 1mb'
-* visualisatie MSLP
-*******************
-'set rgb 250 0 0 0 80'
+* Visualiatie Lifted index
+**************************
+say '..Lifted index'
 'set gxout contour'
-'set ccolor 250'
-'set cstyle 3'
+'set rgb 200 0 0 0 160'
+'set cmax 0'
 'set cint 1'
-'set clopts -1'
-'set clab off'
-'d slp'
-
-say '..MSLP per 4mb'
-* visualisatie MSLP
-*******************
-'set rgb 250 0 0 0 150'
-'set gxout contour'
-'set ccolor 250'
 'set cstyle 1'
-'set cint 4'
-'set clopts -1'
+'set ccolor 200'
+'set cthick 2'
 'set clab masked'
-'set cthick 6'
-'d slp'
-
-say '..Isotachs per 25kts'
-* visualisatie Isotachs
-*******************
-'set rgb 250 255 255 255 255'
-'set gxout contour'
-'set ccolor 250'
-'set cstyle 3'
 'set clopts -1'
-'set clab off'
-'set cthick 1'
-'set cmin 50'
-'set cint 25'
-'d wspeed'
+'set csmooth on'
+'d lftxsfc'
 
 say '..500mb GPM'
 * visualisatie 500mb height contours
 ************************************
 'set gxout contour'
-'set rgb 250 255 255 255 255'
 'set cthick 13'
-'set ccolor 250'
+'set ccolor 11'
 'set cstyle 1'
 'set cint 50'
 'set clopts -1'
@@ -169,30 +157,34 @@ say '.Colorbar & annotations'
 ************************
 'q dims'
 times  = sublin(result,5)
-hub = subwrd(times,6)
+validvar = subwrd(times,6)
 
 'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
 
 'set strsiz 0.12'
-'set string 1 r 3 270' ; 'draw string 0.15 0.35 <----- kts, Higher means increasing upper level windspeed ----->' 
+'set string 1 r 3 270' ; 'draw string 0.15 0.35 <-- J/kg, Higher means more favorable for (& severity of) TSTMS -->' 
 
 'set strsiz 0.10'
-'set string 1 r 4 0' ; 'draw string 10.95 7.85 MSLP: Dashed contours each 1mb, Thick contours each 4mb'
+'set string 1 r 4 0' ; 'draw string 10.95 7.85 CAPE: Dashed white contours each 500 J/kg, starting at 500 J/kg'
 'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 300-250mb Isotachs: Dashed contour each 25 kts'
+'set string 1 r 4 0' ; 'draw string 10.95 7.45 Lifted index: Thin black negative contours each 1deg'
 
 'set strsiz 0.14'
-'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
-'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG), run: 'huh
+'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG)'
+
+'set strsiz 0.10'
+'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be - Run: 'runvar' - `4Valid: 'validvar
 
 say '.Saving file'
-
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\ulj'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\CAPE_eur_'i'_valid_'validvar'_run_'runvar'.png x1024 y768'
 
 'clear'
 'set grads off'
+
+say '**'
+say ''
 
 * iteratie progressie
 *********************

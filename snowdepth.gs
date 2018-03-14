@@ -15,13 +15,13 @@ function main(args)
 ********************** Mapopties en resolutie**********************
 'set mproj lambert'
 
-*'set lon -32 30'
-*'set lat 30 65'
-*'set mpvals -2 19 47 59'
+'set lon -32 30'
+'set lat 30 65'
+'set mpvals -2 19 47 59'
 
-'set lon -60 55'
-'set lat 25 80'
-'set mpvals -10 35 45 70'
+*'set lon -60 55'
+*'set lat 25 80'
+*'set mpvals -10 35 45 70'
 
 'set display color white'
 'set csmooth on'
@@ -73,48 +73,47 @@ maps = 82
   while ( i<maps )
 'set t ' i
 
+say 'Timestep ' i
+
 * Colortable
 ************
-'color.gs 0 150 2 -gxout shaded -kind (255,255,255)->(218,218,218)->(180,180,177)->(142,142,142)->(104,104,104)->(22,231,226)->(79,127,193)->(137,23,159)->(151,50,141)->(165,78,122)->(179,105,103)->(193,133,84)->(207,161,65)->(221,188,46)->(235,216,27)->(249,244,8)'
+'color.gs 0 150 1 -gxout shaded -kind (255,255,255)->(96,107,107)->(48,181,181)->(0,255,255)->(0,200,255)->(0,145,254)->(48,118,254)->(97,90,254)->(146,62,254)->(195,34,254)->(244,6,254)->(213,5,221)->(182,4,188)->(150,3,155)->(119,2,121)->(88,1,88)'
 
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 300-250mb Isotachs, Streamlines, Geopotential height (m) & MSLP'
-'set strsiz 0.10'
-'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 Accumulated snowdepth (fixed ratio, cm), MSLP & 0degC Isotherm (2m)'
+
 
 say '.Calculations'
 * Declaration variables & calculations
 **************************************
-'define u250 = ugrdprs(lev=250)*1.943844'
-'define v250 = vgrdprs(lev=250)*1.943844'
-'define u300 = ugrdprs(lev=300)*1.943844'
-'define v300 = vgrdprs(lev=300)*1.943844'
-
-'define uavg = (u250 + u300)/2'
-'define vavg = (v250 + v300)/2'
-
-'define wspeed = sqrt(uavg*uavg+vavg*vavg)'
-
 'define slp  = const((prmslmsl*0.01),0,-u)'
+'define td = dpt2m-273.16'
 
-say '.Visualisations'
-* visualisatie 500mb windspeeds
-*******************************
-say '..500mb Isotachs'
-'d wspeed'
+* visualisatie sneeuwval
+************************
+'d weasdsfc'
 
-'set rgb 250 0 0 0 20'
-'set gxout stream'
+say '..Snowdepth per 1mb'
+* visualisatie MSLP
+*******************
+'set gxout contour'
+'set rgb 250 255 255 255 150'
+'set gxout contour'
 'set ccolor 250'
-'set strmden 5'
-'d uavg;vavg'
+'set cstyle 3'
+'set cint 10'
+'set cmin 0'
+'set clopts -1'
+'set clab off'
+'d weasdsfc'
 
 say '..MSLP per 1mb'
 * visualisatie MSLP
 *******************
-'set rgb 250 0 0 0 80'
+'define slp  = const((prmslmsl*0.01),0,-u)'
+'set rgb 250 0 0 0 40'
 'set gxout contour'
 'set ccolor 250'
 'set cstyle 3'
@@ -126,7 +125,8 @@ say '..MSLP per 1mb'
 say '..MSLP per 4mb'
 * visualisatie MSLP
 *******************
-'set rgb 250 0 0 0 150'
+'define slp  = const((prmslmsl*0.01),0,-u)'
+'set rgb 250 0 0 0 90'
 'set gxout contour'
 'set ccolor 250'
 'set cstyle 1'
@@ -136,33 +136,34 @@ say '..MSLP per 4mb'
 'set cthick 6'
 'd slp'
 
-say '..Isotachs per 25kts'
-* visualisatie Isotachs
-*******************
-'set rgb 250 255 255 255 255'
-'set gxout contour'
-'set ccolor 250'
-'set cstyle 3'
-'set clopts -1'
-'set clab off'
-'set cthick 1'
-'set cmin 50'
-'set cint 25'
-'d wspeed'
-
-say '..500mb GPM'
+say '..500mb Geopotential height'
 * visualisatie 500mb height contours
 ************************************
+*'set gxout contour'
+*'set rgb 250 0 0 0 200'
+*'set cthick 13'
+*'set ccolor 250'
+*'set cstyle 1'
+*'set cint 50'
+*'set clopts -1'
+*'set clab masked'
+*'set cthick 7'
+*'d smth9(hgtprs(lev=500))'
+
+* visualisatie 0° 2m isotherm
+*****************************
+'set rgb 200 0 0 255 100'
 'set gxout contour'
-'set rgb 250 255 255 255 255'
-'set cthick 13'
-'set ccolor 250'
-'set cstyle 1'
-'set cint 50'
+'set csmooth on'
+'set ccolor 200'
+'set cstyle 3'
 'set clopts -1'
 'set clab masked'
 'set cthick 7'
-'d smth9(hgtprs(lev=500))'
+'set cmax 0'
+'set cmin 0'
+'set antialias on'
+'d tmp2m-276.15'
 
 say '.Colorbar & annotations'
 * colorbar & annotations
@@ -173,23 +174,35 @@ hub = subwrd(times,6)
 
 'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
 
-'set strsiz 0.12'
-'set string 1 r 3 270' ; 'draw string 0.15 0.35 <----- kts, Higher means increasing upper level windspeed ----->' 
+'set strsiz 0.12'                                                                                               
+'set string 1 r 3 270' ; 'draw string 0.15 0.35 <----- cm, Higher means increasing accumulating snowdepth ----->' 
 
 'set strsiz 0.10'
-'set string 1 r 4 0' ; 'draw string 10.95 7.85 MSLP: Dashed contours each 1mb, Thick contours each 4mb'
-'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 300-250mb Isotachs: Dashed contour each 25 kts'
+'set string 1 r 4 0' ; 'draw string 10.95 7.85 MSLP: Dashed black contours each 1mb, Thick contours each 4mb'
+*'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick black contours each 50 meter'
+'set string 1 r 4 0' ; 'draw string 10.95 7.65 Snowdepth: Dashed white contours, each 5cm'
+'set string 1 r 4 0' ; 'draw string 10.95 7.45 0deg Isotherm: Dashed blue contour'
+'set string 1 r 4 0' ; 'draw string 10.95 7.00 Ratio used: standard 1/10'
+
 
 'set strsiz 0.14'
-'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
-'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG), run: 'huh
+'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG)'
+
+'set strsiz 0.10'
+'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be - Run: 'huh' - `4Valid: 'hub
+
 
 say '.Saving file'
 
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\ulj'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\snowdepth_eur_'i'_valid_'hub'_run_'huh'.png x1024 y768'
+
+
+say '..Run, 'huh
+say '..Valid, 'hub
+say '***'
+say ''
 
 'clear'
 'set grads off'

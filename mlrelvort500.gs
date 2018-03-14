@@ -184,7 +184,7 @@ validvar = subwrd(times,6)
 'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG)'
 
 'set strsiz 0.10'
-'set string 4 r 4 0' ; 'draw string 10.95 8.1 Dzengiz Tafa - Weerlierfhebbers - Run: 'runvar' - `4Valid: 'validvar
+'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be - Run: 'runvar' - `4Valid: 'validvar
 
 say '.Saving file'
 * opslag

@@ -8,8 +8,7 @@ function main(args)
 *******************************************************************
 ******************* Opening of datafile: opendap ******************
 
-*'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'date'/gfs_0p25_'hour'z'
-'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25_1hr/gfs'date'/gfs_0p25_1hr_'hour'z'
+'sdfopen http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs'date'/gfs_0p25_'hour'z'
 *'sdfopen http://monsoondata.org:9090/dods/gfs2/gfs.'date''hour'b'
 
 *******************************************************************
@@ -17,9 +16,9 @@ function main(args)
 'set mproj lambert'
 *'set lon -10 55'
 *'set lat 55 75'
-'set lon -60 55'
-'set lat 25 80'
-'set mpvals -10 35 45 70'
+'set lon -32 30'
+'set lat 30 65'
+'set mpvals -2 19 47 59'
 'set display color white'
 'set csmooth on'
 *'set lat 42 56'
@@ -27,12 +26,10 @@ function main(args)
 'set mpdset hires'
 'set strsiz 0.2'
 'set xlab off'
-'set grid off'
 'set ylab off'
 'set parea 0.04 9.7 0.8 8.0'
 'set grid off'
 'set grads off'
-'set antialias on'
 
 *******************************************************************
 ********************** Info uit het descriptorfile ****************
@@ -42,7 +39,7 @@ _undef = getctl(undef)
 _tdef = getctl(tdef)
 _zdef = getctl(zdef)
 
-maps = 181
+maps = 83
 
 *******************************************************************
 ********************** Tijdsinformatie ****************************
@@ -70,197 +67,131 @@ huh = subwrd(_tdef,4)
 
 
 *******************************************************************
-* Mean seay layer pressure                                        *
+* Precipitation                                                   *
 *******************************************************************
-
-"run constants.gs"
 
 * kleurentabel
 **************
-'set rgb 100 220 220 220'
-'set rgb 101 215 216 220'
-'set rgb 102 210 211 221'
-'set rgb 103 205 206 222'
-'set rgb 104 200 201 223'
-'set rgb 105 195 196 224'
-'set rgb 106 190 191 225'
-'set rgb 107 184 187 226'
-'set rgb 108 179 182 227'
-'set rgb 109 174 177 228'
-'set rgb 110 169 172 229'
-'set rgb 111 164 167 230'
-'set rgb 112 159 162 231'
-'set rgb 113 153 158 232'
-'set rgb 114 148 153 232'
-'set rgb 115 143 148 233'
-'set rgb 116 138 143 234'
-'set rgb 117 133 138 235'
-'set rgb 118 128 133 236'
-'set rgb 119 123 128 237'
-'set rgb 120 117 124 238'
-'set rgb 121 112 119 239'
-'set rgb 122 107 114 240'
-'set rgb 123 102 109 241'
-'set rgb 124 97 104 242'
-'set rgb 125 92 99 243'
-'set rgb 126 89 104 243'
-'set rgb 127 86 109 243'
-'set rgb 128 83 114 243'
-'set rgb 129 80 119 244'
-'set rgb 130 76 124 244'
-'set rgb 131 73 130 244'
-'set rgb 132 70 135 244'
-'set rgb 133 67 140 245'
-'set rgb 134 63 145 245'
-'set rgb 135 60 150 245'
-'set rgb 136 57 156 245'
-'set rgb 137 54 161 246'
-'set rgb 138 51 166 246'
-'set rgb 139 47 171 246'
-'set rgb 140 44 176 247'
-'set rgb 141 41 182 247'
-'set rgb 142 38 187 247'
-'set rgb 143 34 192 247'
-'set rgb 144 31 197 248'
-'set rgb 145 28 202 248'
-'set rgb 146 25 208 248'
-'set rgb 147 21 213 248'
-'set rgb 148 18 218 249'
-'set rgb 149 15 223 249'
-'set rgb 150 12 228 249'
-'set rgb 151 11 218 222'
-'set rgb 152 10 208 195'
-'set rgb 153 8 198 168'
-'set rgb 154 7 188 141'
-'set rgb 155 6 178 114'
-'set rgb 156 4 168 87'
-'set rgb 157 3 158 60'
-'set rgb 158 45 172 51'
-'set rgb 159 87 186 42'
-'set rgb 160 129 200 33'
-'set rgb 161 171 215 24'
-'set rgb 162 213 229 15'
-'set rgb 163 255 244 5'
-'set rgb 164 254 226 5'
-'set rgb 165 253 210 5'
-'set rgb 166 251 194 5'
-'set rgb 167 249 178 5'
-'set rgb 168 247 162 4'
-'set rgb 169 245 146 4'
-'set rgb 170 243 130 4'
-'set rgb 171 241 114 3'
-'set rgb 172 239 98 3'
-'set rgb 173 237 82 3'
-'set rgb 174 235 66 2'
-'set rgb 175 233 50 2'
-'set rgb 176 222 46 2'
-'set rgb 177 211 42 2'
-'set rgb 178 200 37 2'
-'set rgb 179 189 33 2'
-'set rgb 180 178 29 2'
-'set rgb 181 167 24 2'
-'set rgb 182 156 20 2'
-'set rgb 183 145 16 2'
-'set rgb 184 134 11 2'
-'set rgb 185 123 7 2'
-'set rgb 186 131 7 17'
-'set rgb 187 139 7 33'
-'set rgb 188 147 6 49'
-'set rgb 189 156 6 65'
-'set rgb 190 164 5 81'
-'set rgb 191 172 5 96'
-'set rgb 192 180 4 112'
-'set rgb 193 189 4 128'
-'set rgb 194 197 4 144'
-'set rgb 195 205 3 160'
-'set rgb 196 213 3 175'
-'set rgb 197 222 2 191'
-'set rgb 198 230 2 207'
-'set rgb 199 238 1 223'
-'set rgb 200 246 1 239'
+'set rgb 101 255 255 255'
+'set rgb 102 209 214 250'
+'set rgb 103 163 173 250'
+'set rgb 104 140 152 250'
+'set rgb 105 70 90 250'
+'set rgb 106 24 49 250'
+'set rgb 107 20 86 250'
+'set rgb 108 16 123 250'
+'set rgb 109 11 160 250'
+'set rgb 110 7 189 250'
+'set rgb 111 3 236 250'
+'set rgb 112 27 214 250'
+'set rgb 113 51 192 250'
+'set rgb 114 75 169 251'
+'set rgb 115 99 147 251'
+'set rgb 116 123 124 252'
+'set rgb 117 147 102 252'
+'set rgb 118 171 79 253'
+'set rgb 119 195 57 253'
+'set rgb 120 219 34 254'
+'set rgb 121 243 12 254'
+'set rgb 122 235 11 245'
+'set rgb 123 226 10 235'
+'set rgb 124 217 9 225'
+'set rgb 125 208 8 215'
+'set rgb 126 199 7 205'
+'set rgb 127 190 6 195'
+'set rgb 128 182 4 185'
+'set rgb 129 173 3 175'
+'set rgb 130 164 2 165'
+'set rgb 131 155 1 155'
+'set rgb 132 152 12 152'
+'set rgb 133 149 23 149'
+'set rgb 134 146 34 146'
+'set rgb 135 142 46 142'
+'set rgb 136 139 57 139'
+'set rgb 137 136 68 136'
+'set rgb 138 132 80 132'
+'set rgb 139 129 91 129'
+'set rgb 140 126 102 126'
+'set rgb 141 122 114 122'
+'set rgb 142 129 122 129'
+'set rgb 143 136 130 136'
+'set rgb 144 144 138 144'
+'set rgb 145 151 146 151'
+'set rgb 146 159 154 159'
+'set rgb 147 166 163 166'
+'set rgb 148 173 171 173'
+'set rgb 149 181 179 181'
+'set rgb 150 188 187 188'
+'set rgb 151 195 195 196'
 
-'set rgb 201 215 215 215'
-'set rgb 202 210 210 210'
-'set rgb 203 205 205 205'
-'set rgb 204 200 200 200'
-'set rgb 205 195 195 195'
-'set rgb 206 190 190 190'
-'set rgb 207 185 185 185
-'set rgb 208 180 180 180'
-'set rgb 209 175 175 175'
-'set rgb 210 170 170 170'
-
-'set rgb 211 165 165 165'
-'set rgb 212 160 160 160'
-'set rgb 213 155 155 155'
-'set rgb 214 150 150 150'
-'set rgb 215 145 145 145'
-'set rgb 216 140 140 140'
-'set rgb 217 135 135 135'
-'set rgb 218 130 130 130'
-'set rgb 219 125 125 125'
-'set rgb 220 120 120 120'
-
-'set rgb 221 115 115 115'
-'set rgb 222 110 110 110'
-'set rgb 223 105 105 105'
-'set rgb 224 100 100 100'
-'set rgb 225 95 95 95'
 
 * Iteratie
 **********
-  i = 42
+  i = 35
   while ( i<maps )
 'set t 'i
 
-* MSLP
-******
+* visualisatie neerslag
+***********************
+'set gxout shaded'
+'set cint 1'
 'set gxout shaded'
 'set csmooth on'
-'set clevs 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 944, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049'
-'set ccols 225 224 223 222 221 220 219 218 217 216 215 214 213 212 211 210 209 208 207 206 205 204 203 202 201 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200'
-'set antialias on'
-'d prmslmsl/100'
+'set cmin 2'
+'set cint 1'
+'set clevs 0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0 8.5 9.0 9.5 10.0 10.5 11.0 11.5 12.0 12.5 13.0 13.5 14.0 14.5 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5 22.0 22.5 23.0 23.5 24.0 24.5'
+'set ccols 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121  122  123  124  125  126  127  128  129  130  131  132  133  134  135  136  137  138  139  140  141  142  143  144  145  146  147  148  149  150  151'
+'d apcpsfc * smth9(csnowsfc)'
 'run cbarm'
+
+* visualisatie 500mb geopotentiele hoogte
+*****************************************
+'set gxout contour'
+'set ccolor 2'
+'set cint 60'
+'set clopts -1'
+'set clab masked'
+'set lev 500'
+'set cthick 7'
+'d hgtprs'
 
 * visualisatie MSLP
 *******************
-'set rgb 210 255 255 255 100'
 'define slp  = const((prmslmsl*0.01),0,-u)'
 'set gxout contour'
-'set ccolor 210'
+'set ccolor 1'
 'set cstyle 3'
 'set cint 1'
 'set clopts -1'
-'set clab off'
-'set antialias on'
+'set clab masked'
+'set cthick 4'
 'd slp'
 
 * visualisatie MSLP
 *******************
 'define slp  = const((prmslmsl*0.01),0,-u)'
 'set gxout contour'
-'set ccolor 210'
-'set cstyle 1'
+'set ccolor 1'
+'set cstyle 3'
 'set cint 4'
 'set clopts -1'
 'set clab masked'
 'set cthick 7'
-'set antialias on'
 'd slp'
 
-* visualisatie 500mb height contours
-************************************
-'set rgb 220 0 0 0 120'
+* visualisatie 0° 2m isotherm
+*****************************
 'set gxout contour'
-'set ccolor 220'
-'set cint 50'
+'set ccolor 5'
+'set cstyle 3'
+'set cint 4'
 'set clopts -1'
-'set cstyle 1'
 'set clab masked'
 'set cthick 7'
-'set antialias on'
-'d hgtprs(lev=500)'
+'set cmax 0'
+'set cmin 0'
+*'d tmp2m'
+
 
 * labels & opmaak
 *****************
@@ -271,13 +202,13 @@ hub = subwrd(times,6)
 'set strsiz 0.13'
 'set string 1 l 4 0' ; 'draw string 0.15 0.4 Dzengiz Tafa'
 'set strsiz 0.12'
-'set string 1 r 3 90' ; 'draw string 9.9 4.6 millibar'
+'set string 1 r 3 270' ; 'draw string 9.9 0.8 <-- cm, higher means increasing depth of accum. fresh snowfall -->'
 'set string 1 r 6 0' ; 'draw string 9.45 0.6 Valid: 'hub
 'set string 1 l 6 0' ; 'draw string 0.15 0.6 Data: NOAA GFS model, run: 'huh
 'set strsiz 0.18'
-'set string 1 l 12 0' ; 'draw string 0.15 8.3 Mean sea layer pressure & 500mb Geopotential height'
+'set string 1 l 12 0' ; 'draw string 0.15 8.3 3 & 6h (alt.int) Fresh snowfall, 500mb gpm & MSLP (W/O melt)'
 
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\mslp'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.0.2.oga.2\i686\prec'i'.png x1024 y768'
 
 * iteratie progressie
 *********************
@@ -286,7 +217,6 @@ hub = subwrd(times,6)
 'set grads off'
 i = i+1
 endwhile
-
 
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 

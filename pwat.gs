@@ -61,55 +61,40 @@ huh = subwrd(_tdef,4)
 times  = sublin(result,5)
 hub = subwrd(times,6)
 
-************************************************
-* 500mb Isotachs                               *
-************************************************
+********************************************************
+* BOw echo derecho index                               *
+********************************************************
 
 * iteratie
 **********
 maps = 82
-
   i = 1
   while ( i<maps )
 'set t ' i
 
+say 'Timestep 'i
+
 * Colortable
 ************
-'color.gs 0 150 2 -gxout shaded -kind (255,255,255)->(218,218,218)->(180,180,177)->(142,142,142)->(104,104,104)->(22,231,226)->(79,127,193)->(137,23,159)->(151,50,141)->(165,78,122)->(179,105,103)->(193,133,84)->(207,161,65)->(221,188,46)->(235,216,27)->(249,244,8)'
+*'color.gs 0 60 0.5 -gxout shaded -kind (255,255,255)->(176,176,228)->(97,97,201)->(17,17,173)->(2,233,247)->(55,133,196)->(108,33,144)->(128,63,125)->(148,93,106)->(169,123,87)->(189,154,68)->(210,184,49)->(230,214,30)'
+'color.gs 0 60 0.5 -gxout shaded -kind (255,255,255)->(140,206,140)->(25,156,25)->(33,77,3)->(255,255,0)->(205,134,0)->(155,13,0)->(245,9,231)->(167,5,160)->(88,1,88)->(63,77,138)->(38,153,189)->(12,230,240)'
 
 *******************************************************************
 ********************** Titels & opmaak ****************************
 'set strsiz 0.18'
-'set string 1 r 12 0' ; 'draw string 10.95 8.3 300-250mb Isotachs, Streamlines, Geopotential height (m) & MSLP'
-'set strsiz 0.10'
-'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be'
+'set string 1 r 12 0' ; 'draw string 10.95 8.3 Precipitable water, 500mb Geopotential height & MSLP'
 
 say '.Calculations'
 * Declaration variables & calculations
 **************************************
-'define u250 = ugrdprs(lev=250)*1.943844'
-'define v250 = vgrdprs(lev=250)*1.943844'
-'define u300 = ugrdprs(lev=300)*1.943844'
-'define v300 = vgrdprs(lev=300)*1.943844'
+'define pwat = pwatclm'
+'define slp = prmslmsl/100'
 
-'define uavg = (u250 + u300)/2'
-'define vavg = (v250 + v300)/2'
-
-'define wspeed = sqrt(uavg*uavg+vavg*vavg)'
-
-'define slp  = const((prmslmsl*0.01),0,-u)'
 
 say '.Visualisations'
-* visualisatie 500mb windspeeds
-*******************************
-say '..500mb Isotachs'
-'d wspeed'
-
-'set rgb 250 0 0 0 20'
-'set gxout stream'
-'set ccolor 250'
-'set strmden 5'
-'d uavg;vavg'
+* visualisatie precipitable water
+*********************************
+'d pwat'
 
 say '..MSLP per 1mb'
 * visualisatie MSLP
@@ -136,25 +121,11 @@ say '..MSLP per 4mb'
 'set cthick 6'
 'd slp'
 
-say '..Isotachs per 25kts'
-* visualisatie Isotachs
-*******************
-'set rgb 250 255 255 255 255'
-'set gxout contour'
-'set ccolor 250'
-'set cstyle 3'
-'set clopts -1'
-'set clab off'
-'set cthick 1'
-'set cmin 50'
-'set cint 25'
-'d wspeed'
-
 say '..500mb GPM'
 * visualisatie 500mb height contours
 ************************************
 'set gxout contour'
-'set rgb 250 255 255 255 255'
+'set rgb 250 255 255 255 150'
 'set cthick 13'
 'set ccolor 250'
 'set cstyle 1'
@@ -171,25 +142,31 @@ say '.Colorbar & annotations'
 times  = sublin(result,5)
 hub = subwrd(times,6)
 
-'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 5 -fwidth 0.10 -fheight 0.11'
+'xcbar 0.28 0.53 0.35 7.55 -direction v  -line on -fskip 6 -fwidth 0.10 -fheight 0.11'
 
 'set strsiz 0.12'
-'set string 1 r 3 270' ; 'draw string 0.15 0.35 <----- kts, Higher means increasing upper level windspeed ----->' 
+'set string 1 r 3 270' ; 'draw string 0.15 0.35 <- mm, Higher means increasing amount of water avail. for precip ->' 
 
 'set strsiz 0.10'
 'set string 1 r 4 0' ; 'draw string 10.95 7.85 MSLP: Dashed contours each 1mb, Thick contours each 4mb'
 'set string 1 r 4 0' ; 'draw string 10.95 7.65 500mb geopotential height: Thick contours each 50 meter'
-'set string 1 r 4 0' ; 'draw string 10.95 7.45 300-250mb Isotachs: Dashed contour each 25 kts'
 
 'set strsiz 0.14'
-'set string 1 r 7 0' ; 'draw string 10.95 0.45 Valid: 'hub
-'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG), run: 'huh
+'set string 1 r 7 0' ; 'draw string 10.95 0.2 Data: NOAA GFS model (0.25DEG)'
+
+'set strsiz 0.10'
+'set string 4 r 4 0' ; 'draw string 10.95 8.1 http://www.chase2.be - http://www.facebook.com/chase2be - Run: 'huh' - `4Valid: 'hub
 
 say '.Saving file'
+say '..Valid: 'hub
+say '..Run: 'huh
 
 * opslag
 ********
-'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\ulj'i'.png x1024 y768'
+'printim C:\OpenGrADS\Contents\Cygwin\Versions\2.1.a2.oga.1\i686\pwat_eur_'i'_valid_'hub'_run_'huh'.png x1024 y768'
+
+say '***'
+say ''
 
 'clear'
 'set grads off'
